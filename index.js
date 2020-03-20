@@ -1,18 +1,19 @@
-const inquirer = require("inquirer"); 
-const axios = require("axios"); 
+const inquirer = require("inquirer");
+const axios = require("axios");
 const util = require("util");
+const fs = require("fs");
 const writeFileAsync = util.promisify(fs.writeFile);
 
 
 
 
-function initialize(){
-    inquirer.prompt([
+function promptUser() {
+   return inquirer.prompt([
         {
             type: "input",
             name: "name",
             message: "What is your GitHub username?"
-          },
+        },
         {
             type: "input",
             name: "title",
@@ -22,43 +23,43 @@ function initialize(){
             type: "input",
             name: "description",
             message: "What is the description of your project?"
-            
+
         },
         {
             type: "input",
             name: "installation",
             message: "Please describe installation instructions."
-    
+
         },
         {
             type: "input",
             name: "usage",
             message: "Please describe usage of your project."
-    
+
         },
         {
             type: "input",
             name: "license",
             message: "Please include licensing information."
-    
+
         },
         {
             type: "input",
             name: "contributors",
             message: "Please include others who have contributed to your project."
-    
+
         },
         {
             type: "input",
             name: "tests",
             message: "Please provide an example for how to run your code."
-    
-        },
-       
-    
-    ]).then(function(inquirerResponse){
-        generateHTML(inquirerResponse){
-            return `<!DOCTYPE html>
+
+        }]);
+
+ 
+}
+function generateHTML(answers) {
+    return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -111,15 +112,43 @@ function initialize(){
                     <p>For any questions, please feel free to reach out. I can be reached at: {github email}</p>
                   </div>
             </body>
-            </html>`; 
-        }
-        //fs.writeFile("data.js", inquirerResponse, )
-    }); 
+            </html>`;
 }
+// promptUser()
+//   .then(function(answers) {
+//     const html = generateHTML(answers);
+
+//     return writeFileAsync("index2.html", html);
+//   })
+//   .then(function() {
+//     console.log("Successfully wrote to index.html");
+//   })
+//   .catch(function(err) {
+//     console.log(err);
+//   });
+
+async function init() {
+    console.log("hi"); 
+    try {
+        const answers = await promptUser();
+
+        const html = generateHTML(answers);
+
+        await writeFileAsync("index.html", html);
+
+        console.log("Successfully wrote to index.html");
+    } catch (err) {
+        console.log(err);
+    };
+};
+
+init();
 
 
-axios 
-.get()
 
 
-initialize()
+
+// axios 
+// .get()
+
+
