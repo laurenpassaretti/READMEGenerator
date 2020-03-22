@@ -58,7 +58,7 @@ function promptUser() {
 
  
 }
-function generateHTML(answers) {
+function generateHTML(answers,url,url2) {
     return `<!DOCTYPE html>
             <html lang="en">
             <head>
@@ -108,12 +108,13 @@ function generateHTML(answers) {
                   </div>
                   <div>
                     <h3><span class="badge badge-secondary" id="Questions">Questions</span></h3>
-                    <p>{gitHub photo}</p>
-                    <p>For any questions, please feel free to reach out. I can be reached at: {github email}</p>
+                    <img src=${url} height="250" width="250"><img>
+                    <p>For any questions, please feel free to reach out. I can be reached at: ${url2}</p>
                   </div>
             </body>
             </html>`;
 }
+
 // promptUser()
 //   .then(function(answers) {
 //     const html = generateHTML(answers);
@@ -126,23 +127,45 @@ function generateHTML(answers) {
 //   .catch(function(err) {
 //     console.log(err);
 //   });
+// axios
+// .get("https://api.github.com/users/${username}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}")
 
 async function init() {
     console.log("hi"); 
     try {
         const answers = await promptUser();
 
-        const html = generateHTML(answers);
+        // const html = generateHTML(answers);
 
+        // await writeFileAsync("index.html", html);
+        // `https://api.github.com/users/${answers.name}/repos?per_page=100`
+
+        let queryUrl = `https://api.github.com/users/${answers.name}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`;
+        const authToken = "27be221f3e79dd474bed379499fd01b4cad95ae5"; 
+        const config = { headers: {Authorization: `token ${authToken}`},};
+        // https://api.github.com/users/${username}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}
+    axios.get(queryUrl,config).then(async function(response) {
+      function badgeFunction(userLicense) {
+        return `[![GitHub license](https://img.shields.io/badge/license-${userLicense}-blue.svg)]`
+      };  
+      const url = response.data.avatar_url; 
+      badgeFunction(); 
+        // response.data.avatar_url; 
+        const url2 = response.data.email; 
+        const html = generateHTML(answers,url,url2);
         await writeFileAsync("index.html", html);
-
-        console.log("Successfully wrote to index.html");
+        // fs.appendFile("index.html",response.avatar_url)
+      console.log(response)
+      });
     } catch (err) {
         console.log(err);
     };
 };
 
 init();
+
+
+
 
 
 
