@@ -3,7 +3,7 @@ const axios = require("axios");
 const util = require("util");
 const fs = require("fs");
 const writeFileAsync = util.promisify(fs.writeFile);
-const APIKEY = process.env.github_TOKEN
+// const APIKEY = process.env.github_TOKEN
 
 
 
@@ -142,7 +142,7 @@ async function init() {
 
         let queryUrl = `https://api.github.com/users/${answers.name}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`;
        
-        const config = { headers: {Authorization: `token ${APIKEY}`},};
+        const config = { headers: {Authorization: `token ${process.env.github_TOKEN}`},};
         // https://api.github.com/users/${username}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}
     axios.get(queryUrl,config).then(async function(response) {
       function badgeFunction(userLicense) {
